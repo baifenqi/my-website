@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>陈惜梁 - 个人网站</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        /* 导航栏 */
+        .navbar {
+            background-color: #2c3e50;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-right: 2rem;
+            font-size: 1.1rem;
+        }
+        .navbar a:hover {
+            color: #3498db;
+        }
+        /* 容器 */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        /* 个人简介 */
+        .profile {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .profile h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        .profile-content {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .profile-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #3498db;
+        }
+        .profile-text {
+            flex: 1;
+            min-width: 300px;
+        }
+        /* 作品展示 */
+        .works {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .works h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .work-item {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .work-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .work-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .work-video {
+            width: 100%;
+            height: 200px;
+            border: none;
+        }
+        .work-info {
+            padding: 1rem;
+        }
+        .work-info h3 {
+            color: #3498db;
+            margin-bottom: 0.5rem;
+        }
+        /* 下载区 */
+        .download {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .download h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        .download-list {
+            list-style: none;
+        }
+        .download-item {
+            padding: 1rem;
+            border-bottom: 1px dashed #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .download-item a {
+            background-color: #3498db;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .download-item a:hover {
+            background-color: #2980b9;
+        }
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #777;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <a href="#profile">个人简介</a>
+        <a href="#works">作品展示</a>
+        <a href="#download">下载专区</a>
+    </nav>
+
+    <div class="container">
+        <!-- 个人简介板块 -->
+        <section id="profile" class="profile">
+            <h2>个人简介</h2>
+            <div class="profile-content">
+                <img src="images\baifenqi.jpeg" alt="个人头像" class="profile-img">
+                <div class="profile-text">
+                    <h3>陈惜梁</h3>
+                    <p>一位热爱计算机的小白</p>
+                    <p>联系方式：邮箱 2954287926@qq.com | 微信 cxl_777ovo</p>
+                    <p>个人简介详情：<br>
+                        邵阳学院信息与计算科学大三学生，热爱计算机，对编程充满热情。擅长使用C、C++、Java、Python等编程语言，熟悉数据结构和算法。曾参与多个项目，具备一定的项目经验。希望能在计算机领域不断学习和进步，为我国计算机事业做出贡献。                        
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 作品展示板块 -->
+        <section id="works" class="works">
+            <h2>作品展示</h2>
+            <div class="works-grid">
+                <!-- 图片作品示例 -->
+                <div class="work-item">
+                    <img src="images\a4823e2a-39cf-4216-a432-d3705e1749c6.png" alt="作品1名称" class="work-img">
+                    <div class="work-info">
+                        <h3>作品1：飞机大战</h3>
+                        <p>作品描述：用c++为主要代码编写的，结合SDL库设计的简易游戏。</p>
+                    </div>
+                </div>
+
+                <!-- 视频作品示例 -->
+                <div class="work-item">
+                    <video controls class="work-video">
+                        <source src="videos/work2.mp4" type="video/mp4">
+                        你的浏览器不支持视频播放，请更换浏览器后重试。
+                    </video>
+                    <div class="work-info">
+                        <h3>作品2：XX视频作品</h3>
+                        <p>作品描述：比如「产品演示视频 | 使用PR+AE制作 | 时长2分30秒」</p>
+                    </div>
+                </div>
+
+                <!-- 可复制上面的模板添加更多作品 -->
+                <div class="work-item">
+                    <img src="images/work3.jpg" alt="作品3名称" class="work-img">
+                    <div class="work-info">
+                        <h3>作品3：XX项目</h3>
+                        <p>作品描述：补充你的作品信息，按需添加即可。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 下载专区 -->
+        <section id="download" class="download">
+            <h2>下载专区</h2>
+            <ul class="download-list">
+                <li class="download-item">
+                    <span>我的简历.pdf</span>
+                    <a href="files/resume.pdf" download>点击下载</a>
+                </li>
+                <li class="download-item">
+                    <span>作品合集.zip</span>
+                    <a href="files/works.zip" download>点击下载</a>
+                </li>
+                <li class="download-item">
+                    <span>其他文件.xlsx</span>
+                    <a href="files/other.xlsx" download>点击下载</a>
+                </li>
+            </ul>
+        </section>
+    </div>
+
+    <footer>
+        © 2026 陈惜梁 - 个人网站 版权所有
+    </footer>
+</body>
+</html>
