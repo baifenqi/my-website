@@ -5,243 +5,649 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>陈惜梁 - 个人网站</title>
     <style>
-        /* 全局样式重置 */
+        /* 全局重置 & 基础样式 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: "Microsoft YaHei", sans-serif;
+            scroll-behavior: smooth;
         }
+
+        :root {
+            --card-bg: rgba(255, 255, 255, 0.15);
+            --card-border: 1px solid rgba(255, 255, 255, 0.2);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --text-color: #ffffff;
+            --hover-color: rgba(255, 255, 255, 0.3);
+            --transition: all 0.4s ease;
+            --modal-bg: rgba(0, 0, 0, 0.8);
+            --code-bg: #1e1e1e;
+        }
+
         body {
-            background-color: #f5f5f5;
-            color: #333;
+            background: url('images/bg.gif') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            color: var(--text-color);
             line-height: 1.6;
+            position: relative; /* 关键修复：添加相对定位，确保子元素层级正常 */
         }
-        /* 导航栏 */
-        .navbar {
-            background-color: #2c3e50;
-            padding: 1rem 2rem;
-            position: sticky;
+
+        /* 背景遮罩（保证内容可读性） */
+        .page-mask {
+            position: fixed;
             top: 0;
-            z-index: 100;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.2);
+            z-index: 0; /* 关键修复：调整层级，避免遮挡内容 */
+            backdrop-filter: blur(2px);
         }
+
+        /* 主容器（关键修复：设置层级，确保内容在遮罩上方） */
+        .main-wrapper {
+            position: relative;
+            z-index: 10; /* 高于遮罩层，确保内容可见 */
+            min-height: 100vh;
+        }
+
+        /* 音乐控制面板（悬浮不遮挡内容） */
+        .music-panel {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--card-bg);
+            border: var(--card-border);
+            border-radius: 50px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 998;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--card-shadow);
+        }
+
+        .music-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 20px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .volume-slider {
+            width: 80px;
+            -webkit-appearance: none;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* 顶部导航栏（确保可见） */
+        .navbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.2rem 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
         .navbar a {
-            color: white;
+            color: var(--text-color);
             text-decoration: none;
-            margin-right: 2rem;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            margin: 0 2rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            background: var(--card-bg);
+            border: var(--card-border);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
         }
+
         .navbar a:hover {
-            color: #3498db;
+            background: var(--hover-color);
+            transform: translateY(-3px);
         }
-        /* 容器 */
+
+        /* 内容容器（居中+留白） */
         .container {
             max-width: 1200px;
-            margin: 2rem auto;
+            margin: 0 auto;
             padding: 0 2rem;
         }
+
+        /* 通用卡片样式（确保不透明、层级正常） */
+        .card {
+            background: var(--card-bg);
+            border: var(--card-border);
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            backdrop-filter: blur(10px);
+            isolation: isolate;
+        }
+
+        /* 标题样式 */
+        .profile h2, .works h2, .download h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 0.8rem;
+        }
+
+        .profile h2::after, .works h2::after, .download h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 2px;
+            background-color: var(--text-color);
+        }
+
         /* 个人简介 */
-        .profile {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-        .profile h2 {
-            color: #2c3e50;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 0.5rem;
-        }
         .profile-content {
             display: flex;
             align-items: center;
-            gap: 2rem;
+            gap: 3rem;
             flex-wrap: wrap;
+            justify-content: center;
         }
+
         .profile-img {
             width: 200px;
             height: 200px;
             border-radius: 50%;
             object-fit: cover;
-            border: 5px solid #3498db;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            box-shadow: var(--card-shadow);
         }
+
         .profile-text {
             flex: 1;
             min-width: 300px;
         }
-        /* 作品展示 */
-        .works {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
+
+        .profile-text h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
         }
-        .works h2 {
-            color: #2c3e50;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 0.5rem;
-        }
+
+        /* 作品展示网格 */
         .works-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 2rem;
         }
+
         .work-item {
-            border: 1px solid #eee;
-            border-radius: 8px;
+            background: var(--card-bg);
+            border: var(--card-border);
+            border-radius: 15px;
             overflow: hidden;
-            transition: transform 0.3s;
+            transition: var(--transition);
+            cursor: pointer;
         }
+
         .work-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
         }
+
         .work-img {
             width: 100%;
-            height: 200px;
+            height: 220px;
             object-fit: cover;
+            display: block;
         }
+
         .work-video {
             width: 100%;
-            height: 200px;
+            height: 220px;
             border: none;
         }
+
         .work-info {
-            padding: 1rem;
+            padding: 1.2rem;
         }
+
         .work-info h3 {
-            color: #3498db;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
         }
-        /* 下载区 */
-        .download {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+        .view-detail {
+            color: #add8e6;
+            font-size: 0.9rem;
+            margin-top: 0.8rem;
+            display: inline-block;
         }
-        .download h2 {
-            color: #2c3e50;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 0.5rem;
-        }
+
+        /* 下载专区 */
         .download-list {
             list-style: none;
         }
+
         .download-item {
-            padding: 1rem;
-            border-bottom: 1px dashed #eee;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: var(--transition);
         }
-        .download-item a {
-            background-color: #3498db;
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 4px;
+
+        .download-item:last-child {
+            border-bottom: none;
+        }
+
+        .download-item:hover {
+            background: var(--hover-color);
+            border-radius: 10px;
+        }
+
+        .download-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-color);
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
             text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: var(--transition);
         }
-        .download-item a:hover {
-            background-color: #2980b9;
+
+        .download-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
         }
+
+        /* 作品详情模态框 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--modal-bg);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            border: var(--card-border);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.8rem;
+            color: var(--text-color);
+            cursor: pointer;
+            background: transparent;
+            border: none;
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-header h3 {
+            font-size: 1.8rem;
+            color: #add8e6;
+        }
+
+        .modal-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-section h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: #f0e68c;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 10px;
+            padding: 1.2rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #a9b7c6;
+        }
+
         /* 页脚 */
         footer {
             text-align: center;
             padding: 2rem;
-            color: #777;
-            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* 响应式适配（手机端） */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            .navbar a {
+                margin: 0.5rem;
+                padding: 0.6rem 1.2rem;
+                font-size: 1rem;
+            }
+            .music-panel {
+                bottom: 1rem;
+                right: 1rem;
+                padding: 8px 12px;
+            }
+            .volume-slider {
+                width: 60px;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+            .works-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 导航栏 -->
-    <nav class="navbar">
-        <a href="#profile">个人简介</a>
-        <a href="#works">作品展示</a>
-        <a href="#download">下载专区</a>
-    </nav>
+    <!-- 背景遮罩层 -->
+    <div class="page-mask"></div>
 
-    <div class="container">
-        <!-- 个人简介板块 -->
-        <section id="profile" class="profile">
-            <h2>个人简介</h2>
-            <div class="profile-content">
-                <img src="images\baifenqi.jpeg" alt="个人头像" class="profile-img">
-                <div class="profile-text">
-                    <h3>陈惜梁</h3>
-                    <p>一位热爱计算机的小白</p>
-                    <p>联系方式：邮箱 2954287926@qq.com | 微信 cxl_777ovo</p>
-                    <p>个人简介详情：<br>
-                        邵阳学院信息与计算科学大三学生，热爱计算机，对编程充满热情。擅长使用C、C++、Java、Python等编程语言，熟悉数据结构和算法。曾参与多个项目，具备一定的项目经验。希望能在计算机领域不断学习和进步，为我国计算机事业做出贡献。                        
-                    </p>
-                </div>
-            </div>
-        </section>
+    <!-- 主内容包裹层（关键修复：确保内容层级） -->
+    <div class="main-wrapper">
+        <!-- 背景音乐元素 -->
+        <audio id="bgMusic" loop preload="auto">
+            <source src="music/bg_music.mp3" type="audio/mpeg">
+            <source src="music/bg-music.ogg" type="audio/ogg">
+            你的浏览器不支持音频播放，请更换现代浏览器！
+        </audio>
 
-        <!-- 作品展示板块 -->
-        <section id="works" class="works">
-            <h2>作品展示</h2>
-            <div class="works-grid">
-                <!-- 图片作品示例 -->
-                <div class="work-item">
-                    <img src="images\a4823e2a-39cf-4216-a432-d3705e1749c6.png" alt="作品1名称" class="work-img">
-                    <div class="work-info">
-                        <h3>作品1：飞机大战</h3>
-                        <p>作品描述：用c++为主要代码编写的，结合SDL库设计的简易游戏。</p>
+        <!-- 音乐控制面板 -->
+        <div class="music-panel">
+            <button class="music-btn" id="musicBtn" onclick="toggleMusic()">♪</button>
+            <input type="range" min="0" max="1" step="0.01" value="0.5" 
+                   class="volume-slider" id="volumeSlider" oninput="setVolume()">
+        </div>
+
+        <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <a href="#profile">个人简介</a>
+            <a href="#works">作品展示</a>
+            <a href="#download">下载专区</a>
+        </nav>
+
+        <!-- 核心内容容器 -->
+        <div class="container">
+            <!-- 个人简介卡片 -->
+            <section id="profile" class="card profile">
+                <h2>个人简介</h2>
+                <div class="profile-content">
+                    <img src="images/baifenqi.jpeg" alt="陈惜梁" class="profile-img">
+                    <div class="profile-text">
+                        <h3>陈惜梁</h3>
+                        <p>一位热爱计算机的小白</p>
+                        <p>联系方式：邮箱 2954287926@qq.com | 微信 cxl_777ovo</p>
+                        <p>个人简介详情：<br>
+                            邵阳学院信息与计算科学大三学生，热爱计算机，对编程充满热情。擅长使用C、C++、Java、Python等编程语言，熟悉数据结构和算法。曾参与多个项目，具备一定的项目经验。希望能在计算机领域不断学习和进步，为我国计算机事业做出贡献。                        
+                        </p>
                     </div>
                 </div>
+            </section>
 
-                <!-- 视频作品示例 -->
-                <div class="work-item">
-                    <video controls class="work-video">
-                        <source src="videos/work2.mp4" type="video/mp4">
-                        你的浏览器不支持视频播放，请更换浏览器后重试。
-                    </video>
-                    <div class="work-info">
-                        <h3>作品2：XX视频作品</h3>
-                        <p>作品描述：比如「产品演示视频 | 使用PR+AE制作 | 时长2分30秒」</p>
+            <!-- 作品展示卡片 -->
+            <section id="works" class="card works">
+                <h2>作品展示</h2>
+                <div class="works-grid">
+                    <!-- 飞机大战作品 -->
+                    <div class="work-item" onclick="openModal('plane-war')">
+                        <img src="images/a4823e2a-39cf-4216-a432-d3705e1749c6.png" alt="飞机大战" class="work-img">
+                        <div class="work-info">
+                            <h3>作品1：飞机大战</h3>
+                            <p>作品描述：用c++为主要代码编写的，结合SDL库设计的简易游戏。</p>
+                            <span class="view-detail">点击查看详情 →</span>
+                        </div>
+                    </div>
+
+                    <!-- 视频作品 -->
+                    <div class="work-item" onclick="openModal('video-work')">
+                        <video controls class="work-video">
+                            <source src="videos/work2.mp4" type="video/mp4">
+                            你的浏览器不支持视频播放，请更换浏览器后重试。
+                        </video>
+                        <div class="work-info">
+                            <h3>作品2：XX视频作品</h3>
+                            <p>作品描述：比如「产品演示视频 | 使用PR+AE制作 | 时长2分30秒」</p>
+                            <span class="view-detail">点击查看详情 →</span>
+                        </div>
+                    </div>
+
+                    <!-- 更多作品 -->
+                    <div class="work-item" onclick="openModal('project-3')">
+                        <img src="images/work3.jpg" alt="作品3名称" class="work-img">
+                        <div class="work-info">
+                            <h3>作品3：XX项目</h3>
+                            <p>作品描述：补充你的作品信息，按需添加即可。</p>
+                            <span class="view-detail">点击查看详情 →</span>
+                        </div>
                     </div>
                 </div>
+            </section>
 
-                <!-- 可复制上面的模板添加更多作品 -->
-                <div class="work-item">
-                    <img src="images/work3.jpg" alt="作品3名称" class="work-img">
-                    <div class="work-info">
-                        <h3>作品3：XX项目</h3>
-                        <p>作品描述：补充你的作品信息，按需添加即可。</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+            <!-- 下载专区卡片 -->
+            <section id="download" class="card download">
+                <h2>下载专区</h2>
+                <ul class="download-list">
+                    <li class="download-item">
+                        <span>我的简历.pdf</span>
+                        <a href="files/resume.pdf" download class="download-btn">点击下载</a>
+                    </li>
+                    <li class="download-item">
+                        <span>作品合集.zip</span>
+                        <a href="files/works.zip" download class="download-btn">点击下载</a>
+                    </li>
+                    <li class="download-item">
+                        <span>其他文件.xlsx</span>
+                        <a href="files/works.zip" download class="download-btn">点击下载</a>
+                    </li>
+                </ul>
+            </section>
+        </div>
 
-        <!-- 下载专区 -->
-        <section id="download" class="download">
-            <h2>下载专区</h2>
-            <ul class="download-list">
-                <li class="download-item">
-                    <span>我的简历.pdf</span>
-                    <a href="files/resume.pdf" download>点击下载</a>
-                </li>
-                <li class="download-item">
-                    <span>作品合集.zip</span>
-                    <a href="files/works.zip" download>点击下载</a>
-                </li>
-                <li class="download-item">
-                    <span>其他文件.xlsx</span>
-                    <a href="files/other.xlsx" download>点击下载</a>
-                </li>
-            </ul>
-        </section>
+        <!-- 页脚 -->
+        <footer>
+            © 2026 陈惜梁 - 个人网站 版权所有
+        </footer>
     </div>
 
-    <footer>
-        © 2026 陈惜梁 - 个人网站 版权所有
-    </footer>
+    <!-- 作品详情模态框 -->
+    <div class="modal" id="workModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+            <div class="modal-header">
+                <h3 id="modalTitle">作品详情</h3>
+            </div>
+            <div id="modalContent">
+                <!-- 内容由JS动态填充 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 背景音乐控制 ==========
+        let musicPlaying = false;
+        const music = document.getElementById("bgMusic");
+        const musicBtn = document.getElementById("musicBtn");
+        const volumeSlider = document.getElementById("volumeSlider");
+
+        // 初始化音量
+        music.volume = volumeSlider.value;
+
+        // 切换播放/暂停
+        function toggleMusic() {
+            if (musicPlaying) {
+                music.pause();
+                musicBtn.textContent = "♪";
+                musicPlaying = false;
+            } else {
+                music.play().then(() => {
+                    musicBtn.textContent = "♫";
+                    musicPlaying = true;
+                }).catch(err => {
+                    console.log("播放失败：", err);
+                    alert("请先点击页面任意位置，再尝试播放音乐（浏览器安全限制）");
+                });
+            }
+        }
+
+        // 调节音量
+        function setVolume() {
+            music.volume = volumeSlider.value;
+        }
+
+        // 页面首次点击自动尝试播放（解决浏览器自动播放限制）
+        document.addEventListener('click', function() {
+            if (!musicPlaying) {
+                music.play().then(() => {
+                    musicPlaying = true;
+                    musicBtn.textContent = "♫";
+                }).catch(err => {});
+            }
+        }, { once: true });
+
+        // ========== 作品详情模态框 ==========
+        const workDetails = {
+            "plane-war": {
+                title: "作品1：飞机大战",
+                intro: "基于C++ + SDL库开发的2D简易飞机大战游戏，实现了经典的射击、敌机生成、碰撞检测、计分等核心功能，适合入门级游戏开发学习。",
+                features: [
+                    "1. 玩家飞机移动：通过键盘方向键控制飞机上下左右移动；",
+                    "2. 子弹发射：空格键发射子弹，自动检测敌机碰撞；",
+                    "3. 敌机生成：随机生成不同类型的敌机，速度/血量不同；",
+                    "4. 碰撞检测：子弹击中敌机、敌机撞击玩家飞机的碰撞逻辑；",
+                    "5. 计分系统：击毁敌机获得分数，游戏结束显示最终得分；",
+                    "6. 音效播放：结合SDL_mixer实现发射、爆炸等音效。"
+                ],
+                code: "// 飞机大战核心代码示例\n#include <SDL2/SDL.h>\n#include <iostream>\n\nint main(int argc, char* argv[]) {\n    // 初始化SDL\n    if (SDL_Init(SDL_INIT_VIDEO) < 0) {\n        std::cerr << \"SDL初始化失败：\" << SDL_GetError() << std::endl;\n        return -1;\n    }\n\n    // 创建窗口\n    SDL_Window* window = SDL_CreateWindow(\n        \"飞机大战\",\n        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,\n        800, 600,\n        SDL_WINDOW_SHOWN\n    );\n\n    // 游戏主循环\n    bool running = true;\n    SDL_Event e;\n    while (running) {\n        while (SDL_PollEvent(&e) != 0) {\n            if (e.type == SDL_QUIT) running = false;\n        }\n    }\n\n    SDL_DestroyWindow(window);\n    SDL_Quit();\n    return 0;\n}"
+            },
+            "video-work": {
+                title: "作品2：XX视频作品",
+                intro: "基于PR+AE制作的产品演示视频，主要用于展示XX项目的核心功能和使用流程，时长2分30秒，包含动画特效、字幕解说、背景音乐等元素。",
+                features: [
+                    "1. 视频剪辑：使用PR对实拍素材/录屏素材进行剪辑、拼接、调速；",
+                    "2. 动画特效：通过AE制作UI动效、转场效果、文字动画；",
+                    "3. 音频处理：添加背景音乐、旁白解说，调整音量/降噪；",
+                    "4. 字幕制作：同步添加中文字幕，支持不同分辨率适配；",
+                    "5. 格式导出：支持MP4/AVI等多种格式，适配网页/移动端播放。"
+                ],
+                code: "// 该作品为视频制作类，无代码实现，以下是视频制作流程说明：\n1. 素材准备：收集项目录屏、产品图片、背景音乐等素材；\n2. 粗剪：在PR中拼接核心功能展示片段，确定视频节奏；\n3. 精剪：调整片段时长，添加转场效果（如淡入淡出、缩放）；\n4. 特效制作：在AE中制作产品UI动效，导出后导入PR；\n5. 音频处理：添加旁白和背景音乐，调整音频轨道音量；\n6. 字幕添加：同步视频节奏添加字幕，设置字体/颜色/动画；\n7. 导出：选择1080P分辨率，MP4格式，适配网页播放。"
+            },
+            "project-3": {
+                title: "作品3：XX项目",
+                intro: "此处替换为你的项目详细介绍，比如基于Python的数据分析项目、Java的Web项目等。",
+                features: [
+                    "1. 功能点1：替换为项目核心功能；",
+                    "2. 功能点2：替换为项目核心功能；",
+                    "3. 功能点3：替换为项目核心功能。"
+                ],
+                code: "// 此处替换为你的项目核心代码\n// 示例（Python数据分析）：\nimport pandas as pd\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# 加载数据\ndf = pd.read_csv(\"data.csv\")\n\n# 数据清洗\ndf = df.dropna() # 删除空值\ndf[\"date\"] = pd.to_datetime(df[\"date\"]) # 转换日期格式\n\n# 数据可视化\nplt.figure(figsize=(12, 6))\nplt.plot(df[\"date\"], df[\"value\"], color=\"red\", label=\"数据趋势\")\nplt.title(\"XX数据趋势分析\")\nplt.xlabel(\"日期\")\nplt.ylabel(\"数值\")\nplt.legend()\nplt.grid(True)\nplt.savefig(\"trend.png\")\nplt.show()"
+            }
+        };
+
+        // 打开模态框
+        function openModal(workKey) {
+            const modal = document.getElementById("workModal");
+            const modalTitle = document.getElementById("modalTitle");
+            const modalContent = document.getElementById("modalContent");
+            const work = workDetails[workKey];
+
+            // 拼接详情内容
+            let contentHtml = 
+                '<div class="modal-section">' +
+                    '<h4>作品介绍</h4>' +
+                    '<p>' + work.intro + '</p>' +
+                '</div>' +
+                '<div class="modal-section">' +
+                    '<h4>核心功能</h4>' +
+                    '<p>' + work.features.join('<br>') + '</p>' +
+                '</div>' +
+                '<div class="modal-section">' +
+                    '<h4>代码/实现说明</h4>' +
+                    '<div class="code-block">' + escapeHtml(work.code) + '</div>' +
+                '</div>';
+
+            // 填充内容并显示
+            modalTitle.textContent = work.title;
+            modalContent.innerHTML = contentHtml;
+            modal.style.display = "flex";
+            document.body.style.overflow = "hidden";
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            const modal = document.getElementById("workModal");
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+
+        // HTML字符转义（防止代码破坏页面）
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const modal = document.getElementById("workModal");
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
 </body>
 </html>
